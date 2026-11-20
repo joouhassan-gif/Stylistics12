@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style, Text, and Frequency | 3D Cinematic Investigation</title>
+
+  <!-- Ultra-Modern Typography Stack -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="cinematic-theme">
+
+  <!-- ==================== THREE.JS 3D CANVAS ==================== -->
+  <div id="webgl-container"></div>
+  <canvas id="festival-canvas"></canvas>
+
+  <!-- Atmospheric Vignette & Silver Mist Overlay -->
+  <div class="cinematic-vignette"></div>
+  <div class="film-grain"></div>
+
+  <!-- ==================== EXTRAORDINARY 3D OPENING SEQUENCE ==================== -->
+  <div id="cinematic-intro" class="cinematic-intro-screen">
+    <div class="intro-darkness"></div>
+
+    <div class="intro-prompt-box" id="intro-prompt">
+      <p class="presenter-credit">Ahmed Fathy &amp; Youssef Hassan present</p>
+      <div class="ticking-indicator">
+        <span class="pulse-ring"></span>
+        <span class="pulse-core"></span>
+      </div>
+      <p class="prompt-text">A confidential stylistic investigation is about to begin.</p>
+      <button id="btn-ignite-intro" class="btn-ignite-navy">
+        <span class="ignite-icon">⚡</span>
+        <span>ILLUMINATE INVESTIGATION ROOM</span>
+      </button>
+      <span class="audio-hint-sub">Sound effects active • Best experienced with headphones</span>
+    </div>
+
+    <!-- Opening Dossier Presentation that zooms into camera -->
+    <div class="intro-dossier-reveal hidden" id="intro-dossier">
+      <div class="dossier-tab-classified">CONFIDENTIAL // ARCHIVE #ENG-402</div>
+      <div class="dossier-inner">
+        <div class="stamp-classified-wrapper">
+          <div class="stamp-silver-classified stamp-slam" id="classified-stamp">TOP SECRET // VERIFIED</div>
+        </div>
+
+        <div class="academic-colophon-intro">
+          <span class="meta-tag">FACULTY OF ARTS — ENGLISH DEPARTMENT</span>
+          <span class="meta-tag">SOHAG UNIVERSITY • COURSE: STYLISTICS</span>
+          <span class="lecturer-tag">SUPERVISING LECTURER: <strong>DR. MAMDOUH FOUAD HASSAN</strong></span>
+        </div>
+
+        <h1 class="intro-crime-title">STYLE, TEXT, AND FREQUENCY</h1>
+        <h2 class="intro-crime-subtitle">STYLE IN FICTION · CHAPTER 2</h2>
+        <p class="intro-tagline">Readerly recurrence, statistical norms, and literary foregrounding</p>
+
+        <div class="intro-lead-paragraph">
+          “Style is not an isolated whim or accidental curiosity. It is the persistent recurrence of linguistic choices perceived by the reader, verified by statistical benchmarks, and elevated through artistic foregrounding.”
+        </div>
+
+        <div class="intro-action-box">
+          <button id="btn-enter-investigation" class="btn-navy-silver">
+            <span class="enter-icon">🔍</span>
+            <span class="enter-text">START INVESTIGATION</span>
+            <span class="enter-arrow">⟶</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== TOP FORENSIC TELEMETRY BAR ==================== -->
+  <header class="top-forensic-bar">
+    <div class="bar-left">
+      <div class="forensic-case-badge">
+        <span class="badge-beacon"></span>
+        <span class="badge-id">STYLE IN FICTION // CHAPTER 2</span>
+      </div>
+      <div class="academic-telemetry">
+        <span class="dept">SOHAG UNIV • ENGLISH DEPT</span>
+        <span class="sep">/</span>
+        <span class="lecturer">DR. MAMDOUH FOUAD HASSAN</span>
+      </div>
+    </div>
+
+    <div class="bar-center">
+      <div class="case-counter-box">
+        <span class="counter-label">INVESTIGATION DOSSIER</span>
+        <span id="case-counter" class="counter-val">SECTION 01 / 10</span>
+      </div>
+      <div class="evidence-progress-bar">
+        <div id="progress-bar-fill" class="progress-fill"></div>
+      </div>
+    </div>
+
+    <div class="bar-right">
+      <button id="btn-spatial-mode" class="bar-btn" title="Toggle 3D Investigation Room View (B)">
+        <svg viewBox="0 0 24 24" class="btn-svg"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        <span class="key-lbl">3D ROOM [B]</span>
+      </button>
+
+      <button id="btn-evidence-drawer" class="bar-btn" title="Open Case File Index (C)">
+        <svg viewBox="0 0 24 24" class="btn-svg"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        <span class="key-lbl">INDEX [C]</span>
+      </button>
+
+      <button id="btn-audio-toggle" class="bar-btn" title="Toggle Procedural Audio (M)">
+        <svg id="audio-icon-off" viewBox="0 0 24 24" class="btn-svg"><path d="M11 5L6 9H2v6h4l5 4V5zm12 7c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM3 3l18 18"/></svg>
+        <svg id="audio-icon-on" viewBox="0 0 24 24" class="btn-svg hidden"><path d="M11 5L6 9H2v6h4l5 4V5zm8.5 7c0-2.5-1.5-4.7-3.5-5.6v11.2c2-.9 3.5-3.1 3.5-5.6zm-5-8.5v2.1c3.4 1.2 6 4.4 6 8.4s-2.6 7.2-6 8.4v2.1c4.6-1.3 8-5.5 8-10.5s-3.4-9.2-8-10.5z"/></svg>
+        <span id="audio-status-label" class="key-lbl">AUDIO: OFF</span>
+      </button>
+
+      <button id="btn-fullscreen-toggle" class="bar-btn" title="Toggle Fullscreen (F)">
+        <svg viewBox="0 0 24 24" class="btn-svg"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN 3D INVESTIGATION VIEWPORT ==================== -->
+  <main id="presentation-viewport">
+    <div id="slides-deck" class="slides-deck">
+
+      <!-- ==================== SLIDE 01: TITLE (PDF Page 1) ==================== -->
+      <section class="slide active" id="slide-1" data-case="01" data-title="Style, Text, and Frequency">
+        <div class="dossier-card hero-dossier">
+          <div class="evidence-tape-banner">CHAPTER 2 EVIDENCE // SOHAG UNIVERSITY</div>
+          <div class="dossier-content-center">
+            <div class="silver-stamp-seal">CONFIDENTIAL // ACADEMIC DOSSIER</div>
+            <div class="hero-kicker-tag">STYLE IN FICTION · CHAPTER 2</div>
+            <h1 class="main-crime-heading">Style, Text, and<br><span class="accent-silver">Frequency</span></h1>
+            <p class="hero-subheading">Readerly recurrence, statistical norms, and literary foregrounding</p>
+            <div class="silver-divider-line"></div>
+
+            <div class="academic-briefing-strip">
+              <span>FACULTY OF ARTS • ENGLISH DEPT • SOHAG UNIVERSITY</span>
+              <span class="bullet-dot">•</span>
+              <span>LECTURER: <strong>DR. MAMDOUH FOUAD HASSAN</strong></span>
+            </div>
+
+            <!-- CORE DEFINITION (Axiom) -->
+            <div class="stylistics-axiom-box">
+              <div class="axiom-header">
+                <span class="axiom-badge">CORE DEFINITION // FOUNDATIONAL AXIOM</span>
+                <span class="axiom-source">ENG-402 · STYLISTICS</span>
+              </div>
+              <p class="axiom-quote">
+                “Stylistics is the study of style as a <span class="highlight-cyan">linguistic</span> rather than literary study.”
+              </p>
+              <div class="axiom-subtext">
+                Analyzing style through systematic, verifiable language patterns and empirical frequency distributions rather than subjective, impressionistic literary commentary.
+              </div>
+            </div>
+
+            <p class="opening-statement">
+              Welcome to the 3D analytical investigation of literary style. How do quantitative linguistic patterns, statistical baselines, and authorial deviations combine to shape readerly perception and artistic foregrounding?
+            </p>
+
+            <div class="slide-action-row">
+              <button class="btn-navy-silver" onclick="window.nextSlide()">
+                <span>BEGIN EVIDENCE INVESTIGATION</span>
+                <span class="arrow-ico">⟶</span>
+              </button>
+              <span class="keyboard-instruction">Use <kbd>→</kbd> or <kbd>Space</kbd> • Press <kbd>B</kbd> for 3D Room View</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== SLIDE 02: CORE PERSPECTIVE (PDF Page 2) ==================== -->
+      <section class="slide" id="slide-2" data-case="02" data-title="Core Perspective">
+        <div class="dossier-card">
+          <div class="dossier-top-header">
+            <span class="case-label">CASE FILE #02 // CORE PERSPECTIVE</span>
+            <span class="exhibit-pill">EXHIBIT A-1</span>
+          </div>
+
+          <h2 class="dossier-title">Pattern, Frequency, and Statistical Limits</h2>
+          <p class="dossier-subtitle">The foundational principles governing the empirical examination of style</p>
+
+          <div class="dual-columns-grid">
+            <!-- Card 1: Readerly Focus -->
+            <div class="forensic-subcard" id="card-recurrence">
+              <span class="subcard-kicker">READERLY FOCUS</span>
+              <h3 class="subcard-title">Style as Recurrence</h3>
+              <p class="subcard-lead">Sustained linguistic tendency rather than isolated choices.</p>
+              <p class="subcard-body">
+                A writer's style cannot be judged by an isolated fluke or a solitary sentence. Style is the cumulative, persistent recurrence of specific linguistic structures that gradually builds a recognizable pattern in the reader's cognitive processing.
+              </p>
+
+              <div class="interactive-recurrence-wave">
+                <span class="wave-label">RECURRENCE PATTERN WAVE:</span>
+                <div class="wave-bars-track">
+                  <span class="wave-col" style="height: 40%;"></span>
+                  <span class="wave-col" style="height: 65%;"></span>
+                  <span class="wave-col" style="height: 90%;"></span>
+                  <span class="wave-col" style="height: 45%;"></span>
+                  <span class="wave-col" style="height: 80%;"></span>
+                  <span class="wave-col" style="height: 100%;"></span>
+                  <span class="wave-col" style="height: 70%;"></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 2: Quantification Critique -->
+            <div class="forensic-subcard highlight-subcard" id="card-critique">
+              <span class="subcard-kicker kicker-cyan">QUANTIFICATION CRITIQUE</span>
+              <h3 class="subcard-title">No Pure Objectivity</h3>
+              <p class="subcard-lead">Statistics support intuition rather than replace judgment.</p>
+              <p class="subcard-body">
+                Mechanical counting cannot substitute literary sensitivity. Numerical tallies provide empirical verification, but only qualitative literary insight reveals what those frequency distributions signify artistically and thematically.
+              </p>
+
+              <div class="axiom-callout-box">
+                <span class="axiom-pill">METHODOLOGICAL AXIOM</span>
+                <p>“Counting without literary insight is mere arithmetic; intuition without empirical data is mere impressionism.”</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== SLIDE 03: KEY TRIAD (PDF Page 3) ==================== -->
+      <section class="slide" id="slide-3" data-case="03" data-title="Key Triad">
+        <div class="dossier-card">
+          <div class="dossier-top-header">
+            <span class="case-label">CASE FILE #03 // THE KEY TRIAD</span>
+            <span class="exhibit-pill">EXHIBIT A-2</span>
+          </div>
+
+          <h2 class="dossier-title">Deviance, Prominence, and Foregrounding</h2>
+          <p class="dossier-subtitle">The three distinct stages through which linguistic features achieve aesthetic power</p>
+
+          <div class="triad-linear-flow">
+            <!-- Step 1 -->
+            <div class="triad-stage-card">
+              <div class="stage-top-meta">
+                <span class="stage-num">01</span>
+                <span class="stage-level">STATISTICAL</span>
+              </div>
+              <h3 class="stage-name">Deviance</h3>
+              <div class="stage-core-quote">Departure from expected frequency norms.</div>
+              <p class="stage-explanation">An objective departure from standard grammar, lexical expectation, or probabilistic baseline distributions.</p>
+              <span class="stage-status-badge">Linguistic Fact</span>
+            </div>
+
+            <div class="stage-flow-arrow">⟶</div>
+
+            <!-- Step 2 -->
+            <div class="triad-stage-card highlight-stage">
+              <div class="stage-top-meta">
+                <span class="stage-num">02</span>
+                <span class="stage-level">PSYCHOLOGICAL</span>
+              </div>
+              <h3 class="stage-name">Prominence</h3>
+              <div class="stage-core-quote">Perceptual salience noticed by readers.</div>
+              <p class="stage-explanation">The cognitive mechanism whereby a linguistic feature attracts active readerly attention and stands out in the textual fabric.</p>
+              <span class="stage-status-badge badge-silver">Reader Perception</span>
+            </div>
+
+            <div class="stage-flow-arrow">⟶</div>
+
+            <!-- Step 3 -->
+            <div class="triad-stage-card">
+              <div class="stage-top-meta">
+                <span class="stage-num">03</span>
+                <span class="stage-level">AESTHETIC</span>
+              </div>
+              <h3 class="stage-name">Foregrounding</h3>
+              <div class="stage-core-quote">Quantitative or qualitative artistic highlighting.</div>
+              <p class="stage-explanation">The motivated aesthetic design (Prague School / Mukařovský) that transforms noticeable deviance into literary meaning.</p>
+              <span class="stage-status-badge">Literary Function</span>
+            </div>
+          </div>
+
+          <div class="triad-summary-strip">
+            <span class="strip-bullet">⚖️</span>
+            <span><strong>The Integrated Relationship:</strong> Deviance is the statistical cause; Prominence is the psychological effect; Foregrounding is the artistic achievement.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== SLIDE 04: BENCHMARKS & NORMS (PDF Page 4) ==================== -->
+      <section class="slide" id="slide-4" data-case="04" data-title="Benchmarks & Norms">
+        <div class="dossier-card">
+          <div class="dossier-top-header">
+            <span class="case-label">CASE FILE #04 // BENCHMARKS & NORMS</span>
+            <span class="exhibit-pill">EXHIBIT B-TABLE</span>
+          </div>
+
+          <h2 class="dossier-title">Relative, Secondary, and Internal Norms</h2>
+          <p class="dossier-subtitle">Deviance cannot exist without a benchmark; every stylistic deviation is evaluated against a specific norm</p>
+
+          <!-- Authentic Table from PDF Page 4 -->
+          <div class="forensic-table-wrapper">
+            <table class="forensic-norms-table">
+              <thead>
+                <tr>
+                  <th>Norm Type</th>
+                  <th>Comparison Basis</th>
+                  <th>Key Example</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="table-row">
+                  <td class="col-norm-name"><span class="silver-dot"></span> Relative Norm</td>
+                  <td class="col-basis">Same author, genre, or style borrowing</td>
+                  <td class="col-example"><strong>Mimicking letters or speech</strong></td>
+                </tr>
+                <tr class="table-row highlight-row">
+                  <td class="col-norm-name"><span class="silver-dot dot-cyan"></span> Secondary Norm</td>
+                  <td class="col-basis">Consistent internal text pattern</td>
+                  <td class="col-example"><strong>Lok's speech in <em>The Inheritors</em></strong></td>
+                </tr>
+                <tr class="table-row">
+                  <td class="col-norm-name"><span class="silver-dot dot-navy"></span> Internal Deviation</td>
+                  <td class="col-basis">Departure from text’s own norm</td>
+                  <td class="col-example"><strong>Complex climax in Hemingway</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Explanatory Dossier Cards -->
+          <div class="norms-annotated-grid">
+            <div class="norm-anno-card">
+              <span class="anno-pill">1. RELATIVE NORM</span>
+              <p>Style measured against external baselines: an author comparing against their earlier works or borrowing letter-writing conventions.</p>
+            </div>
+            <div class="norm-anno-card highlight-anno">
+              <span class="anno-pill pill-cyan">2. SECONDARY NORM (William Golding)</span>
+              <p>Golding achieves a brand-new norm: Lok's restricted Neanderthal syntax and sensory perspective in <em>The Inheritors</em>.</p>
+            </div>
+            <div class="norm-anno-card">
+              <span class="anno-pill">3. INTERNAL DEVIATION (Ernest Hemingway)</span>
+              <p>Hemingway creates a simple declarative baseline, then intentionally ruptures it with sudden complex syntax at the climax.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== SLIDE 05: TEXTUAL VARIATION & TOOLS (PDF Page 5) ==================== -->
+      <section class="slide" id="slide-5" data-case="05" data-title="Textual Variation & Tools">
+        <div class="dossier-card">
+          <div class="dossier-top-header">
+            <span class="case-label">CASE FILE #05 // TEXTUAL VARIATION & TOOLS</span>
+            <span class="exhibit-pill">EXHIBIT C-TOOLS</span>
+          </div>
+
+          <h2 class="dossier-title">Dynamic Style and Style Markers</h2>
+          <p class="dossier-subtitle">The analytical toolkit used to map stylistic movement and identify functional linguistic units</p>
+
+          <div class="tools-triple-grid">
+            <!-- Tool 1 -->
+            <div class="stylistic-tool-box">
+              <div class="tool-icon-frame">
+                <svg viewBox="0 0 24 24" class="tool-svg"><path d="M3 17l6-6 4 4 8-8v6h2V3h-10v2h6l-7 7-4-4-7 7z"/></svg>
+              </div>
+              <h3 class="tool-name">Pervasive vs. Local</h3>
+              <p class="tool-headline">Global tendencies paired with local dramatic shifts.</p>
+              <p class="tool-desc">Pervasive characteristics run throughout the whole text establishing authorial voice; local characteristics are confined to a scene or dialogue for sudden dramatic intensity.</p>
+            </div>
+
+            <!-- Tool 2 -->
+            <div class="stylistic-tool-box highlight-tool-box">
+              <div class="tool-icon-frame frame-cyan">
+                <svg viewBox="0 0 24 24" class="tool-svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+              </div>
+              <h3 class="tool-name">Internal Variation</h3>
+              <p class="tool-headline">Style evolves or shifts tone across scenes.</p>
+              <p class="tool-desc">Style is never static: authors modulate clause length, lexical choices, and perspectives dynamically as characters mature or narrative tension escalates.</p>
+            </div>
+
+            <!-- Tool 3 -->
+            <div class="stylistic-tool-box">
+              <div class="tool-icon-frame">
+                <svg viewBox="0 0 24 24" class="tool-svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+              </div>
+              <h3 class="tool-name">Style Markers</h3>
+              <p class="tool-headline">Units and categories carrying clear literary function.</p>
+              <p class="tool-desc">Specific linguistic features (e.g., transitive verbs, abstract nouns, manner adverbs, elegant variations) that carry demonstrable stylistic significance.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== SLIDE 06: PERSPECTIVE & SALIENCE (PDF Page 7 Comic) ==================== -->
+      <section class="slide" id="slide-6" data-case="06" data-title="Perspective & Salience">
+        <div class="dossier-card">
+          <div class="dossier-top-header">
+            <span class="case-label">CASE FILE #06 // READERLY SALIENCE & PERSPECTIVE</span>
+            <span class="exhibit-pill">EXHIBIT D-COMIC</span>
+          </div>
+
+          <h2 class="dossier-title">One Reality, Two Perspectives: How Framing Shapes Style</h2>
+          <p class="dossier-subtitle">The identical linguistic fact generates opposite reader realities through cognitive foregrounding</p>
+
+          <!-- Authentic Lecture Illustration Exhibit -->
+          <div class="comic-image-exhibit-container">
+            <div class="exhibit-image-frame">
+              <div class="frame-corner top-left"></div>
+              <div class="frame-corner top-right"></div>
+              <div class="frame-corner bottom-left"></div>
+              <div class="frame-corner bottom-right"></div>
+              <img src="comic-perspective.jpg" alt="Perspective & Readerly Salience Comic: Oak St & 5th Ave (Bad Luck vs Such a Nice Owl)" class="comic-perspective-img" id="comic-img-exhibit">
+              <div class="image-caption-bar">
+                <div class="caption-left">
+                  <span class="caption-tag">EXHIBIT D-COMIC // LECTURE SLIDE 7</span>
+                  <span class="caption-scene">OAK ST & 5TH AVE</span>
+                </div>
+                <div class="caption-right">
+                  <span class="caption-desc">Identical Physical Stimulus (Owl) ⟶ Divergent Readerly Foregrounding</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dual Perspectives from PDF Page 7 -->
+          <div class="comic-perspective-duo">
+            <!-- Perspective A -->
+            <div class="comic-side-card card-negative">
+              <div class="side-tag tag-red">PERSPECTIVE A: OMINOUS FOREGROUNDING</div>
+              <div class="speech-quote-headline quote-bad">“BAD LUCK !! BAD LUCK !! BAD LUCK !!”</div>
+              <div class="perspective-critique-text">
+                <strong>Negative Priming:</strong> The owl is perceived as a menacing omen. The linguistic repetition (<em>"Bad luck !!"</em> × 3) reinforces ominous psychological salience and cognitive anxiety in the reader's consciousness.
+              </div>
+            </div>
+
+            <!-- Perspective B -->
+            <div class="comic-side-card card-positive">
+              <div class="side-tag tag-green">PERSPECTIVE B: BENEVOLENT FOREGROUNDING</div>
+              <div class="speech-quote-headline quote-nice">“SUCH A NICE OWL”</div>
+              <div class="perspective-critique-text">
+                <strong>Aesthetic Appreciation:</strong> The exact same owl on the exact same branch is perceived as an endearing, peaceful creature through positive stylistic framing and benevolent foregrounding.
+              </div>
+            </div>
+          </div>
+
+          <div class="comic-takeaway-banner">
+            <span class="t-pill">CORE STYLISTIC LESSON:</span>
+            <span>A linguistic feature possesses no innate emotional tone until authorial style and reader perspective foreground its significance.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== SLIDE 07: CHAPTER 2 TAKEAWAY (PDF Page 6) ==================== -->
+      <section class="slide" id="slide-7" data-case="07" data-title="Chapter 2 Takeaway">
+        <div class="dossier-card hero-dossier takeaway-dossier">
+          <div class="dossier-content-center">
+            <div class="silver-stamp-seal">CHAPTER 2 TAKEAWAY</div>
+            <h1 class="main-crime-heading takeaway-quote-title">
+              “Frequency Reveals Pattern;<br>
+              <span class="accent-silver">Literary Insight Reveals Meaning</span>”
+            </h1>
+            <div class="silver-divider-line"></div>
+            <p class="takeaway-sub-line">Chapter 2 Summary · Style in Fiction</p>
+
+            <div class="takeaway-synthesis-grid">
+              <div class="synth-card">
+                <span class="synth-digit">01</span>
+                <h4>Frequency Reveals Habits</h4>
+                <p>Mathematical frequency tallies linguistic recurrence, establishing the normative baseline of expectation.</p>
+              </div>
+              <div class="synth-card highlight-synth">
+                <span class="synth-digit digit-cyan">02</span>
+                <h4>Deviance Prompts Salience</h4>
+                <p>Linguistic departure from the norm creates psychological prominence in the reader's cognitive consciousness.</p>
+              </div>
+              <div class="synth-card">
+                <span class="synth-digit">03</span>
+                <h4>Foregrounding Achieves Art</h4>
+                <p>Artistic motivation transforms quantifiable deviations into profound aesthetic and thematic meaning.</p>
+              </div>
+            </div>
+
+            <div class="slide-action-row">
+              <button class="btn-navy-silver" onclick="window.nextSlide()">
+                <span>ENTER FORENSIC STYLISTICS TRIAL</span>
+                <span class="arrow-ico">⟶</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== SLIDE 08: FORENSIC EXAMINATION (QUIZ) ==================== -->
+      <section class="slide" id="slide-8" data-case="08" data-title="Forensic Stylistics Quiz">
+        <div class="dossier-card quiz-card-view">
+          <div class="dossier-top-header">
+            <span class="case-label">CASE FILE #08 // FORENSIC EXAMINATION</span>
+            <span class="exhibit-pill">TRIAL VERIFICATION</span>
+          </div>
+
+          <div class="quiz-engine-wrapper">
+            <div class="quiz-stats-header">
+              <span class="q-progress">QUESTION <span id="quiz-q-num">1</span> OF 5</span>
+              <span class="q-score">SCORE: <span id="quiz-score-display">0</span> / 5</span>
+            </div>
+
+            <div id="quiz-interactive-body">
+              <!-- Dynamically populated via JS -->
+            </div>
+
+            <div id="quiz-explanation-banner" class="quiz-explanation-banner hidden">
+              <div id="quiz-status-pill" class="quiz-status-pill"></div>
+              <div id="quiz-rationale-text" class="quiz-rationale-text"></div>
+              <button id="btn-quiz-proceed" class="btn-navy-silver btn-proceed-quiz">NEXT QUESTION ⟶</button>
+            </div>
+
+            <!-- Quiz Final Summary -->
+            <div id="quiz-complete-screen" class="quiz-complete-screen hidden">
+              <div class="silver-stamp-seal">TRIAL CONCLUDED</div>
+              <h2 class="summary-score-heading">FORENSIC STYLISTIC EVALUATION</h2>
+              <div class="final-score-orb">
+                <span id="final-score-digit">0</span>
+                <span class="score-denominator">/ 5</span>
+              </div>
+              <div id="detective-rank-title" class="detective-rank-title">EVALUATING...</div>
+              <p id="detective-rank-text" class="detective-rank-text"></p>
+              <button id="btn-quiz-retest" class="btn-outline-silver">RE-EXAMINE CHAPTER 2 EVIDENCE</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== SLIDE 09: CASE CLOSED & COLOPHON ==================== -->
+      <section class="slide" id="slide-9" data-case="09" data-title="Case Closed & Colophon">
+        <div class="dossier-card hero-dossier closing-dossier">
+          <div class="dossier-content-center">
+            <div class="stamp-silver-classified stamp-solved">CASE CLOSED // INVESTIGATION SOLVED</div>
+
+            <h1 class="main-crime-heading">STYLE, TEXT, AND FREQUENCY</h1>
+            <h2 class="sub-crime-heading">STYLE IN FICTION · CHAPTER 2</h2>
+
+            <div class="supreme-verdict-box">
+              <span class="verdict-banner-tag">SUPREME SCHOLARLY VERDICT</span>
+              <p class="verdict-quote">
+                “Style is not only about <strong>what</strong> a writer says, but also about the linguistic choices and quantifiable patterns that distinguish the <strong>way</strong> it is said.”
+              </p>
+            </div>
+
+            <div class="academic-signoff-grid">
+              <div class="signoff-box">
+                <span class="s-label">SUPERVISING LECTURER</span>
+                <span class="s-value">DR. MAMDOUH FOUAD HASSAN</span>
+                <span class="author-credit-label">PRESENTATION MADE BY</span>
+                <span class="author-credit-names">Ahmed Fathy<br>Youssef Hassan</span>
+              </div>
+              <div class="signoff-box">
+                <span class="s-label">DEPARTMENT & FACULTY</span>
+                <span class="s-value">DEPARTMENT OF ENGLISH, FACULTY OF ARTS</span>
+              </div>
+              <div class="signoff-box">
+                <span class="s-label">UNIVERSITY</span>
+                <span class="s-value">SOHAG UNIVERSITY</span>
+              </div>
+            </div>
+
+            <div class="closing-cta-row">
+              <button id="btn-view-3d-room" class="btn-outline-silver">
+                <span>VIEW 3D ROOM OVERVIEW</span>
+              </button>
+              <button id="btn-restart-investigation" class="btn-navy-silver">
+                <span>RE-OPEN INVESTIGATION (RESTART)</span>
+              </button>
+            </div>
+
+            <div class="official-thankyou">
+              THANK YOU FOR YOUR ATTENTION
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== SLIDE 10: THANK YOU ==================== -->
+      <section class="slide" id="slide-10" data-case="10" data-title="Thank You">
+        <div class="dossier-card thank-you-dossier">
+          <img
+            class="thank-you-image"
+            src="thank-you-image.jpg"
+            alt="A person holding a red rose"
+          >
+          <div class="thank-you-overlay"></div>
+          <h1 class="thank-you-title">Thank You</h1>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ==================== BOTTOM FORENSIC DECK ==================== -->
+  <footer class="bottom-forensic-deck">
+    <div class="deck-left">
+      <button id="btn-prev-case" class="deck-nav-btn" title="Previous Section (Left Arrow)">
+        <span class="nav-arrow">←</span>
+        <span>PREVIOUS</span>
+      </button>
+    </div>
+
+    <div class="deck-center">
+      <div id="slide-pills-container" class="slide-pills-container">
+        <!-- Slide navigation pills generated by JS -->
+      </div>
+    </div>
+
+    <div class="deck-right">
+      <button id="btn-next-case" class="deck-nav-btn highlight-nav-btn" title="Next Section (Right Arrow / Space)">
+        <span>NEXT</span>
+        <span class="nav-arrow">→</span>
+      </button>
+    </div>
+  </footer>
+
+  <!-- ==================== 3D SPATIAL ROOM HUD OVERLAY ==================== -->
+  <div id="spatial-hud" class="spatial-hud-overlay hidden">
+    <div class="spatial-hud-bar">
+      <div class="hud-telemetry">
+        <span class="hud-pin-icon">📍</span>
+        <div>
+          <h3 class="hud-title">3D INVESTIGATION ROOM & EVIDENCE NETWORK</h3>
+          <p class="hud-sub">Click & drag to orbit in 3D • Scroll to zoom • Click any pinned evidence folder to inspect</p>
+        </div>
+      </div>
+      <button id="btn-exit-spatial" class="btn-close-hud">✕ RETURN TO DOSSIER</button>
+    </div>
+  </div>
+
+  <!-- ==================== CASE FILE INDEX DRAWER ==================== -->
+  <aside id="case-index-drawer" class="case-index-drawer">
+    <div class="drawer-top">
+      <div>
+        <span class="drawer-tag">EVIDENCE ARCHIVE</span>
+        <h3 class="drawer-heading">CHAPTER 2 INDEX</h3>
+      </div>
+      <button id="btn-close-drawer" class="btn-close-drawer-x">✕</button>
+    </div>
+    <div id="drawer-cases-list" class="drawer-cases-list">
+      <!-- 9 Items generated by JS -->
+    </div>
+  </aside>
+
+  <!-- ==================== FESTIVAL CELEBRATION OVERLAY ==================== -->
+  <div id="festival-overlay" class="festival-overlay hidden">
+    <div class="festival-banner-card">
+      <div class="confetti-emojis">🎉 🎆 🥳 🌟 🎊</div>
+      <h2 class="festival-heading">MAGNIFICENT! FESTIVAL OF STYLISTICS!</h2>
+      <p class="festival-sub">A flawless deduction! The stylistic evidence is completely verified.</p>
+    </div>
+  </div>
+
+  <!-- ==================== DISAPPOINTED FACE MODAL ==================== -->
+  <div id="disappointed-modal" class="disappointed-modal hidden">
+    <div class="disappointed-modal-card">
+      <div class="face-anim-box">
+        <svg viewBox="0 0 160 160" class="disappointed-svg">
+          <circle cx="80" cy="80" r="70" class="face-base"/>
+          <line x1="45" y1="52" x2="68" y2="60" class="eyebrow"/>
+          <line x1="115" y1="52" x2="92" y2="60" class="eyebrow"/>
+          <ellipse cx="55" cy="72" rx="7" ry="10" class="eye"/>
+          <ellipse cx="105" cy="72" rx="7" ry="10" class="eye"/>
+          <path d="M55 84 C53 84, 50 88, 55 96 C60 88, 57 84, 55 84 Z" class="teardrop"/>
+          <path d="M50 118 Q80 96 110 118" class="mouth-sad"/>
+        </svg>
+      </div>
+      <h3 class="disappointed-heading">OH NO... NOT QUITE RIGHT! 🥺</h3>
+      <p id="disappointed-text" class="disappointed-text">“The stylistician sighs in deep disappointment... Frequency patterns must be measured, not assumed!”</p>
+      <button id="btn-dismiss-disappointed" class="btn-navy-silver">SEE THE FORENSIC RATIONALE</button>
+    </div>
+  </div>
+
+  <!-- Local Offline Libraries -->
+  <script src="three.min.js"></script>
+  <script src="gsap.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
